@@ -27,9 +27,6 @@ if 'tasks' not in st.session_state:
 if 'filter_status' not in st.session_state:
     st.session_state.filter_status = STATUS_ALL
 
-# 为输入框添加独立的状态变量
-if "new_task_input_value" not in st.session_state:
-    st.session_state.new_task_input_value = ""
 
 # --- 1. 任务输入模块 ---
 st.subheader("添加新任务")
@@ -38,7 +35,6 @@ with st.container():
     with col1:
         new_task_input = st.text_input(
             "任务内容",
-            value=st.session_state.new_task_input_value,
             key="new_task",
             placeholder="请输入你需要完成的事情...",
             label_visibility="collapsed",
@@ -49,12 +45,11 @@ with st.container():
     # 处理添加按钮点击事件
     if add_button:
         if new_task_input and new_task_input.strip():
-            # 调用逻辑层函数添加任务
             st.session_state.tasks = add_task(
                 st.session_state.tasks, new_task_input
             )
-            # 优雅清空输入框：设置 session state 变量
-            st.session_state.new_task_input_value = ""
+            # 清空输入框：直接通过 key 设置 session state 值为空字符串
+            st.session_state["new_task"] = ""
             st.rerun()
         else:
             st.error("任务内容不能为空！请填写有效任务。")
