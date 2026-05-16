@@ -27,29 +27,24 @@ if 'tasks' not in st.session_state:
 if 'filter_status' not in st.session_state:
     st.session_state.filter_status = STATUS_ALL
 
-
-# --- 1. 任务输入模块 ---
+# --- 1. 任务输入模块（使用表单，自动清空输入框）---
 st.subheader("添加新任务")
-with st.container():
+with st.form(key="add_task_form", clear_on_submit=True):
     col1, col2 = st.columns([4, 1])
     with col1:
         new_task_input = st.text_input(
             "任务内容",
-            key="new_task",
             placeholder="请输入你需要完成的事情...",
             label_visibility="collapsed",
         )
     with col2:
-        add_button = st.button("➕ 添加", use_container_width=True)
+        submit_button = st.form_submit_button("➕ 添加", use_container_width=True)
 
-    # 处理添加按钮点击事件
-    if add_button:
+    if submit_button:
         if new_task_input and new_task_input.strip():
             st.session_state.tasks = add_task(
                 st.session_state.tasks, new_task_input
             )
-            # 清空输入框：直接通过 key 设置 session state 值为空字符串
-            st.session_state["new_task"] = ""
             st.rerun()
         else:
             st.error("任务内容不能为空！请填写有效任务。")
@@ -121,4 +116,4 @@ else:
         st.divider()
 
 st.markdown("---")
-st.caption("数据存储于浏览器会话 (Session State)，刷新页面不会丢失。")
+st.caption("数据存储于浏览器会话 (Session State)，刷新页面会丢失数据。")
